@@ -19,6 +19,23 @@
 📁 Struttura del progetto
 
 note-app/
+├── backup/
+
+├── frontend/
+
+│   ├── index.html
+
+│   ├── package.json
+
+│   ├── vite.config.js
+
+├── frontend/src/
+
+│   ├── app.jsx
+
+│   ├── index.css
+
+│   ├── main.jsx
 
 ├── public/
 
@@ -73,7 +90,7 @@ bash
 npm run dev
 
 3. Apri il browser
-Vai a http://localhost:3000
+Vai a http://localhost:3001
 
 🔐 Credenziali di esempio
 Username: demo
