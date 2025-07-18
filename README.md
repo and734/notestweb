@@ -77,12 +77,19 @@ backup/notes-backup.json
 
 
 🧩 Estensioni future (suggerite)
+
 🔁 Sostituire SQLite con PostgreSQL o MongoDB
+
 ☁️ Aggiungere sincronizzazione con Google Drive / Dropbox
+
 🔁 Backup su cloud storage (AWS S3, Firebase, ecc.)
+
 📲 Notifiche push con Firebase Cloud Messaging
+
 🔍 Ricerca full-text delle note
+
 ✅ Contribuire
+
 Se vuoi contribuire al progetto, puoi:
 
 1 Forkare il repository
