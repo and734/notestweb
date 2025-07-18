@@ -19,13 +19,21 @@
 📁 Struttura del progetto
 
 note-app/
+
 ├── public/
+
 │   ├── manifest.json
+
 │   └── icons/
+
 ├── src/
+
 │   └── App.jsx
+
 ├── server.js
+
 ├── package.json
+
 └── README.md
 
 🚀 Tecnologie utilizzate
