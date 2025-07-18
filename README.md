@@ -19,7 +19,10 @@
 📁 Struttura del progetto
 
 note-app/
+
 ├── backup/
+
+│   ├── note-backup.json
 
 ├── frontend/
 
