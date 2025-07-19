@@ -2,15 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const { PrismaClient } = require('@prisma/client');
 const jwt = require('jsonwebtoken');
-const app = express();
-const JWT_SECRET = 'your_jwt_secret_key';
 
-// Inizializza Prisma
+const app = express();
 const prisma = new PrismaClient();
 
 // Middleware
 app.use(cors());
 app.use(express.json());
+
+// JWT Secret
+const JWT_SECRET = process.env.JWT_SECRET || 'fallback_jwt_secret'; // Usa variabile d'ambiente
 
 // Login
 app.post('/login', async (req, res) => {
