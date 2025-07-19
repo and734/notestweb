@@ -20,9 +20,9 @@
 
 note-app/
 
-├── backup/
+├── backend/
 
-│   ├── note-backup.json
+│   ├── 
 
 ├── frontend/
 

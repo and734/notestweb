@@ -1,70 +1,64 @@
 import React, { useState, useEffect } from 'react';
 
 function App() {
-  const [notes, setNotes] = useState([]);
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [notes, setNotes] = useState([]);
   const [newNoteTitle, setNewNoteTitle] = useState('');
   const [newNoteContent, setNewNoteContent] = useState('');
   const [newNoteCategory, setNewNoteCategory] = useState('Lavoro');
   const [error, setError] = useState('');
-
-  const API_URL = 'http://localhost:3000';
+  const API_URL = 'https://note-app-backend.onrender.com '; // Cambia con il tuo URL
 
   useEffect(() => {
     if (token) fetchNotes();
   }, [token]);
 
   const fetchNotes = async () => {
-    try {
-      const res = await fetch(`${API_URL}/notes`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setNotes(data);
-    } catch (err) {
-      console.error('Errore nel recupero delle note:', err);
-    }
+    const res = await fetch(`${API_URL}/notes`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    setNotes(data);
   };
 
   const handleLogin = async () => {
-    try {
-      const res = await fetch(`${API_URL}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
-      });
-      const data = await res.json();
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        setToken(data.token);
-      } else {
-        setError('Credenziali non valide');
-      }
-    } catch (err) {
-      setError('Errore nel login');
+    const res = await fetch(`${API_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password }),
+    });
+    const data = await res.json();
+    if (data.token) {
+      localStorage.setItem('token', data.token);
+      setToken(data.token);
+    } else {
+      setError('Login fallito');
     }
   };
 
   const handleCreateNote = async () => {
-    if (!newNoteTitle || !newNoteContent) return;
-    try {
-      const res = await fetch(`${API_URL}/notes`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ title: newNoteTitle, content: newNoteContent, category: newNoteCategory }),
-      });
-      const createdNote = await res.json();
-      setNotes([...notes, createdNote]);
-      setNewNoteTitle('');
-      setNewNoteContent('');
-    } catch (err) {
-      setError('Errore nel salvataggio della nota');
-    }
+    const res = await fetch(`${API_URL}/notes`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({ title: newNoteTitle, content: newNoteContent, category: newNoteCategory }),
+    });
+    const note = await res.json();
+    setNotes([...notes, note]);
+    setNewNoteTitle('');
+    setNewNoteContent('');
+  };
+
+  const handleExport = (format) => {
+    const blob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `notes-export.${format}`;
+    a.click();
   };
 
   if (!token) {
@@ -86,10 +80,7 @@ function App() {
             onChange={(e) => setPassword(e.target.value)}
             className="w-full p-2 border mb-2"
           />
-          <button
-            onClick={handleLogin}
-            className="w-full bg-blue-500 text-white py-2 rounded"
-          >
+          <button onClick={handleLogin} className="w-full bg-blue-500 text-white py-2 rounded">
             Accedi
           </button>
           {error && <p className="text-red-500 mt-2">{error}</p>}
@@ -120,24 +111,24 @@ function App() {
           placeholder="Titolo"
           value={newNoteTitle}
           onChange={(e) => setNewNoteTitle(e.target.value)}
-          className="w-full p-2 border border-gray-300 mb-2"
+          className="w-full p-2 border mb-2"
         />
         <textarea
           placeholder="Contenuto"
           value={newNoteContent}
           onChange={(e) => setNewNoteContent(e.target.value)}
-          className="w-full p-2 border border-gray-300 mb-2"
+          className="w-full p-2 border mb-2"
           rows="4"
         />
         <select
           value={newNoteCategory}
           onChange={(e) => setNewNoteCategory(e.target.value)}
-          className="w-full p-2 border border-gray-300 mb-2 rounded"
+          className="w-full p-2 border mb-2"
         >
-          <option value="Lavoro">Lavoro</option>
-          <option value="Personale">Personale</option>
-          <option value="Scuola">Scuola</option>
-          <option value="Altro">Altro</option>
+          <option>Lavoro</option>
+          <option>Personale</option>
+          <option>Scuola</option>
+          <option>Altro</option>
         </select>
         <button
           onClick={handleCreateNote}
@@ -150,7 +141,7 @@ function App() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
         {notes.length > 0 ? (
           notes.map((note) => (
-            <div key={note.id} className="bg-white rounded shadow p-4 hover:shadow-lg transition duration-300">
+            <div key={note.id} className="bg-white rounded shadow p-4 hover:shadow-lg">
               <h2 className="text-lg font-bold">{note.title}</h2>
               <span className="text-sm text-gray-500">{note.category}</span>
               <p className="text-gray-700 mt-2">{note.content}</p>
@@ -159,6 +150,21 @@ function App() {
         ) : (
           <p className="col-span-full text-center text-gray-500">Nessuna nota disponibile.</p>
         )}
+      </div>
+
+      <div className="p-4">
+        <button
+          onClick={() => handleExport('json')}
+          className="bg-green-500 text-white py-2 px-4 rounded mr-2"
+        >
+          Esporta JSON
+        </button>
+        <button
+          onClick={() => handleExport('csv')}
+          className="bg-blue-500 text-white py-2 px-4 rounded"
+        >
+          Esporta CSV
+        </button>
       </div>
     </div>
   );
