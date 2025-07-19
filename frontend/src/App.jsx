@@ -9,7 +9,7 @@ function App() {
   const [newNoteContent, setNewNoteContent] = useState('');
   const [newNoteCategory, setNewNoteCategory] = useState('Lavoro');
   const [error, setError] = useState('');
-  const API_URL = 'https://note-app-backend.onrender.com '; // Cambia con il tuo URL
+  const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
 
   useEffect(() => {
     if (token) fetchNotes();
